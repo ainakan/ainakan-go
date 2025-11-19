@@ -1,0 +1,23 @@
+name: Install Ainakan Devkit
+description: Install Ainakan Devkit
+inputs:
+  arch:
+    required: true
+    path: the architecture of the devkit
+  os:
+    required: true
+    path: the target operating system of the devkit
+  version:
+    required: true
+    path: the version of the devkit
+runs:
+  using: composite
+  steps:
+    - run: |
+        mkdir /tmp/ainakan-core-devkit && cd /tmp/ainakan-core-devkit
+        wget https://github.com/ainakan/ainakan/releases/download/${{ inputs.version }}/ainakan-core-devkit-${{ inputs.version }}-${{ inputs.os }}-${{ inputs.arch }}.tar.xz -O - | tar --extract --xz
+        sudo mkdir -p /usr/local/include
+        sudo mkdir -p /usr/local/lib
+        sudo cp ainakan-core.h /usr/local/include/ainakan-core.h
+        sudo cp libainakan-core.a /usr/local/lib/libainakan-core.a
+      shell: bash

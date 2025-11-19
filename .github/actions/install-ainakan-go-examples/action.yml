@@ -1,0 +1,9 @@
+name: Install ainakan-go examples
+description: Install ainakan-go examples
+runs:
+  using: composite
+  steps:
+    - run: |
+        git clone https://github.com/nsecho/ainakan-go-examples.git ./ainakan-go-examples
+        rm ./ainakan-go-examples/README.md
+      shell: bash

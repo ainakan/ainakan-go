@@ -14,11 +14,11 @@ jobs:
           - runs_on: ubuntu-latest
             arch: x86_64
             os: linux
-            frida_version: "17.1.3"
+            ainakan_version: "17.1.3"
           - runs_on: macos-latest
             arch: arm64
             os: macos
-            frida_version: "17.1.3"
+            ainakan_version: "17.1.3"
     runs-on: ${{ matrix.runs_on }}
     env:
       GOEXPERIMENT: cgocheck2
@@ -27,13 +27,13 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '^1.22.x'
-      - uses: ./.github/actions/install-frida-go-examples
-      - uses: ./.github/actions/install-frida-devkit
+      - uses: ./.github/actions/install-ainakan-go-examples
+      - uses: ./.github/actions/install-ainakan-devkit
         with:
           arch: ${{ matrix.arch }}
           os: ${{ matrix.os }}
-          version: ${{ matrix.frida_version }}
+          version: ${{ matrix.ainakan_version }}
       - run: |
-          gcc -v; for example in ./frida-go-examples/*; do
+          gcc -v; for example in ./ainakan-go-examples/*; do
             go build "$example"
           done

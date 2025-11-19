@@ -1,4 +1,4 @@
-name: Build frida-core mingw devkit
+name: Build ainakan-core mingw devkit
 on:
   push:
     tags:
@@ -16,25 +16,25 @@ jobs:
           python-version: '3.11'
       - name: Install necessary packages
         run: sudo apt update && sudo apt install -y golang nodejs npm git g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64
-      - name: Download frida
+      - name: Download ainakan
         run: |
-          git clone https://github.com/frida/frida.git ffrida && cd ffrida/
-          python3 tools/ensure-submodules.py frida-core
-      - name: Build frida-core
+          git clone https://github.com/ainakan/ainakan.git fainakan && cd fainakan/
+          python3 tools/ensure-submodules.py ainakan-core
+      - name: Build ainakan-core
         env:
           CC: x86_64-w64-mingw32-gcc
           CXX: x86_64-w64-mingw32-g++
         run: |
-          cd ffrida/subprojects/frida-core
+          cd fainakan/subprojects/ainakan-core
           ./configure --host=x86_64-w64-mingw32 --without-prebuilds=sdk:host --with-devkits=core 
           make
-          mkdir /tmp/frida-core-devkit
-          cp ./build/src/devkit/* /tmp/frida-core-devkit/
+          mkdir /tmp/ainakan-core-devkit
+          cp ./build/src/devkit/* /tmp/ainakan-core-devkit/
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: frida-core-devkit-windows-x86-64
-          path: /tmp/frida-core-devkit/
+          name: ainakan-core-devkit-windows-x86-64
+          path: /tmp/ainakan-core-devkit/
   compile:
     runs-on: windows-latest
     needs:
@@ -54,25 +54,25 @@ jobs:
             mingw-w64-x86_64-python
             git
             zip
-      - name: Download libfrida-core.a
+      - name: Download libainakan-core.a
         uses: actions/download-artifact@v4
         with:
-          name: frida-core-devkit-windows-x86-64
-          path: frida-core-devkit
-      - name: Clone frida-go and frida-go-examples
-        run: git clone https://github.com/frida/frida-go.git && git clone https://github.com/NSEcho/frida-go-examples.git
+          name: ainakan-core-devkit-windows-x86-64
+          path: ainakan-core-devkit
+      - name: Clone ainakan-go and ainakan-go-examples
+        run: git clone https://github.com/ainakan/ainakan-go.git && git clone https://github.com/NSEcho/ainakan-go-examples.git
       - name: Extract devkit
-        run: zip -r frida-core-devkit.zip frida-core-devkit
+        run: zip -r ainakan-core-devkit.zip ainakan-core-devkit
       - name: Prepare for building
         run: |
           ls -l
-          cp frida-core-devkit/libfrida-core.a /mingw64/lib/
-          cp frida-core-devkit/frida-core.h /mingw64/include/
-          cp frida-go-examples/list_devices/list_devices.go frida-go/main.go
+          cp ainakan-core-devkit/libainakan-core.a /mingw64/lib/
+          cp ainakan-core-devkit/ainakan-core.h /mingw64/include/
+          cp ainakan-go-examples/list_devices/list_devices.go ainakan-go/main.go
       - name: Build and run example program
         env:
           CGO_ENABLED: 1
         run: |
-          cd frida-go
+          cd ainakan-go
           go build -o ll main.go && ./ll
     

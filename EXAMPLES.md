@@ -8,12 +8,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/frida/frida-go/frida"
+	"github.com/ainakan/ainakan-go/ainakan"
 )
 
 func main() {
 	r := bufio.NewReader(os.Stdin)
-	dev := frida.USBDevice()
+	dev := ainakan.USBDevice()
 	channel, err := dev.OpenChannel("tcp:8080")
 	if err != nil {
 		panic(err)
@@ -47,7 +47,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/frida/frida-go/frida"
+	"github.com/ainakan/ainakan-go/ainakan"
 )
 
 var sc = `
@@ -62,7 +62,7 @@ Interceptor.attach(Module.getExportByName(null, 'open'), {
 `
 
 func main() {
-	d := frida.LocalDevice()
+	d := ainakan.LocalDevice()
 
 	instrument := func(pid int) {
 		fmt.Printf("✔ attach(pid={%d})\n", pid)
@@ -71,8 +71,8 @@ func main() {
 			panic(err)
 		}
 
-		sess.On("detached", func(reason frida.SessionDetachReason) {
-			fmt.Printf("⚡ detached: pid={%d}, reason='{%s}'\n", pid, frida.SessionDetachReason(reason))
+		sess.On("detached", func(reason ainakan.SessionDetachReason) {
+			fmt.Printf("⚡ detached: pid={%d}, reason='{%s}'\n", pid, ainakan.SessionDetachReason(reason))
 		})
 
 		fmt.Printf("✔ enable_child_gating()\n")
@@ -97,14 +97,14 @@ func main() {
 		d.Resume(pid)
 	}
 
-	d.On("child-added", func(child *frida.Child) {
+	d.On("child-added", func(child *ainakan.Child) {
 		fmt.Printf("⚡ child_added: {%d}, parent_pid: {%d}\n",
 			child.PID(),
 			child.PPID())
 		instrument(int(child.PID()))
 	})
 
-	d.On("child-removed", func(child *frida.Child) {
+	d.On("child-removed", func(child *ainakan.Child) {
 		fmt.Printf("⚡ child_removed: {%v}\n", child.PID())
 	})
 
@@ -115,13 +115,13 @@ func main() {
 			string(data))
 	})
 
-	fopts := frida.NewSpawnOptions()
+	fopts := ainakan.NewSpawnOptions()
 	fopts.SetArgv([]string{
 		"/bin/sh",
 		"-c",
 		"cat /etc/hosts",
 	})
-	fopts.SetStdio(frida.StdioPipe)
+	fopts.SetStdio(ainakan.StdioPipe)
 
 	fmt.Printf("✔ spawn(argv={%v})\n", fopts.Argv())
 	pid, err := d.Spawn("/bin/sh", fopts)
@@ -142,7 +142,7 @@ __agent.ts:__
 ```typescript
 import { log } from "./log.js";
 
-log("Hello from Frida:", Frida.version);
+log("Hello from Ainakan:", Ainakan.version);
 ```
 
 __log.ts:__
@@ -158,12 +158,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/frida/frida-go/frida"
+	"github.com/ainakan/ainakan-go/ainakan"
 	"os"
 )
 
 func main() {
-	c := frida.NewCompiler()
+	c := ainakan.NewCompiler()
 	c.On("starting", func() {
 		fmt.Println("[*] Starting compiler")
 	})
@@ -192,7 +192,7 @@ __agent.ts:__
 ```typescript
 import { log } from "./log.js";
 
-log("Hello from Frida:", Frida.version);
+log("Hello from Ainakan:", Ainakan.version);
 ```
 
 __log.ts:__
@@ -212,16 +212,16 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/frida/frida-go/frida"
+	"github.com/ainakan/ainakan-go/ainakan"
 )
 
 func main() {
-	sess, err := frida.Attach(0)
+	sess, err := ainakan.Attach(0)
 	if err != nil {
 		panic(err)
 	}
 
-	var script *frida.Script = nil
+	var script *ainakan.Script = nil
 
 	onMessage := func(msg string) {
 		msgMap := make(map[string]string)
@@ -229,7 +229,7 @@ func main() {
 		fmt.Printf("on_message: %s\n", msgMap["payload"])
 	}
 
-	compiler := frida.NewCompiler()
+	compiler := ainakan.NewCompiler()
 	compiler.On("output", func(bundle string) {
 		if script != nil {
 			fmt.Println("Unloading old bundle...")
@@ -260,11 +260,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/frida/frida-go/frida"
+	"github.com/ainakan/ainakan-go/ainakan"
 )
 
 func main() {
-	mon := frida.NewFileMonitor("/tmp/test.txt")
+	mon := ainakan.NewFileMonitor("/tmp/test.txt")
 	if err := mon.Enable(); err != nil {
 		panic(err)
 	}

@@ -1,17 +1,17 @@
-# frida-go
-Go bindings for frida.
+# ainakan-go
+Go bindings for ainakan.
 
-For the documentation, visit [https://pkg.go.dev/github.com/frida/frida-go/frida](https://pkg.go.dev/github.com/frida/frida-go/frida).
+For the documentation, visit [https://pkg.go.dev/github.com/ainakan/ainakan-go/ainakan](https://pkg.go.dev/github.com/ainakan/ainakan-go/ainakan).
 
 # Installation
 * `GO111MODULE` needs to be set to `on` or `auto`.
-* Download the _frida-core-devkit_ from the Frida releases [page](https://github.com/frida/frida/releases/) for you operating system and architecture.
+* Download the _ainakan-core-devkit_ from the Ainakan releases [page](https://github.com/ainakan/ainakan/releases/) for you operating system and architecture.
 * Extract the downloaded archive
-* Copy _frida-core.h_ inside your systems include directory(inside /usr/local/include/) and _libfrida-core.a_ inside your lib directory (usually /usr/local/lib).
+* Copy _ainakan-core.h_ inside your systems include directory(inside /usr/local/include/) and _libainakan-core.a_ inside your lib directory (usually /usr/local/lib).
 
 To use in your project, just execute: 
 ```bash
-$ go get github.com/frida/frida-go/frida@latest
+$ go get github.com/ainakan/ainakan-go/ainakan@latest
 ```
 
 Supported OS:
@@ -27,7 +27,7 @@ package main
 import (
   "bufio"
   "fmt"
-  "github.com/frida/frida-go/frida"
+  "github.com/ainakan/ainakan-go/ainakan"
   "os"
 )
 
@@ -46,7 +46,7 @@ Interceptor.attach(Module.getExportByName(null, 'close'), {
 `
 
 func main() {
-  mgr := frida.NewDeviceManager()
+  mgr := ainakan.NewDeviceManager()
 
   devices, err := mgr.EnumerateDevices()
   if err != nil {
